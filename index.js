@@ -184,8 +184,10 @@ window.onload = function () {
 
         var selector = $('#selector')
         for (var i = 0; i < bytes.data.posts.length; i++) {
-          var name = bytes.data.posts[i].name
-          selector.append($('<option>').attr('value', i).html(name))
+          if (getMusicFromByte(bytes.data.posts[i])) {
+            var name = bytes.data.posts[i].name
+            selector.append($('<option>').attr('value', i).html(name))
+          }
         }
         selector.on('change', function() {
           var val = $(this).val()
