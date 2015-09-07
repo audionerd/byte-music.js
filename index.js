@@ -1,5 +1,13 @@
 var music, bytes, playerInterval
 
+function getMusicFromByte(byte) {
+  for (var i = 0; i < byte.package.objects.length; i++) {
+    if (byte.package.objects[i].type == "music") {
+      return byte.package.objects[i]
+    }
+  }
+}
+
 function byteNoteToMidiNote(byteNote) {
   var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
   var noteArr = byteNote.split("/")
@@ -129,16 +137,12 @@ function tick() {
 function playByte(byte) {
   if (playerInterval) { clearInterval(playerInterval) }
 
-  for (var i = 0; i < byte.package.objects.length; i++) {
-    if (byte.package.objects[i].type == "music") {
+  music = getMusicFromByte(byte)
 
-      $('#output').html('')
-      $('#hits').html('')
-
-      music = byte.package.objects[i]
-      playerInterval = setInterval(tick, 1000 * 60 / 4 / music.bpm)
-
-    }
+  if (music) {
+    $('#output').html('')
+    $('#hits').html('')
+    playerInterval = setInterval(tick, 1000 * 60 / 4 / music.bpm)
   }
 }
 
