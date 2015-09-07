@@ -69,8 +69,15 @@ var drumsAsNotes = {
 var ticks = 0
 var beat = 0
 function tick() {
+  // bar length in msecs
+  var barLengthInMsecs = (1000 * 60 / music.bpm)
+
   // grab the next hits
   var hits = music.instructions[beat]
+
+  var bar = Math.floor(beat / 4)
+
+  // console.log("bar: ", bar, "beat:", beat, "bar offset", (beat / 4) % 1)
 
   var el = $('#hits')
   el.html('')
@@ -83,9 +90,15 @@ function tick() {
       var midiChannel = banks.indexOf(hit.bank)
       var note = byteNoteToMidiNote(hit.note)
 
+      // percentage into the bar to play the note
+      var offsetOfBar = (hit.time - bar) - ((beat / 4) % 1)
+
+      // convert to msecs
+      var offset = offsetOfBar * barLengthInMsecs
+
 			MIDI.setVolume(midiChannel, 127)
-			MIDI.noteOn(midiChannel, note, hit.velo, 0)
-			MIDI.noteOff(midiChannel, note, 0 + 0.75)
+			MIDI.noteOn(midiChannel, note, hit.velo, offset / 1000)
+			MIDI.noteOff(midiChannel, note, (offset / 1000) + 0.75)
 
       el.append(
         $('<div>').html(hit.note + " " + emojiForBank[hit.bank])
