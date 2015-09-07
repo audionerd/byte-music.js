@@ -104,8 +104,11 @@ function tick() {
       // convert to msecs
       var offset = offsetOfBar * barLengthInMsecs
 
+      // sometimes hit.velo was undefined
+      var velo = hit.velo || hit.velocity || 127
+
 			MIDI.setVolume(midiChannel, 127)
-			MIDI.noteOn(midiChannel, note, hit.velo, offset / 1000)
+			MIDI.noteOn(midiChannel, note, velo, offset / 1000)
 			MIDI.noteOff(midiChannel, note, (offset / 1000) + 0.75)
 
       el.append(
